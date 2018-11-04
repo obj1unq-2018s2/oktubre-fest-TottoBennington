@@ -1,5 +1,6 @@
 import jarra.*
-import oktubreFest.*
+import carpa.*
+import persona.*
 class MarcaRubia {
 	var property lupulo //gramos x litro
 	var property paisDeOrigen
@@ -17,5 +18,5 @@ class MarcaRoja inherits MarcaNegra{
 }
 
 object graduacionReglamentaria{
-	var property graduacion // ingresar en los tests
+	var property graduacion = 0.05
 }

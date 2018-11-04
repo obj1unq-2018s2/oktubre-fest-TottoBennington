@@ -1,0 +1,142 @@
+import persona.*
+import jarra.*
+import marcas.*
+import carpa.*
+describe "Tests del Oktubre Fest" {
+	// cervezas
+	var hofbrau = new MarcaRoja(
+		lupulo = 0.045,
+		paisDeOrigen = "Alemania"
+	)
+	var corona = new MarcaRubia(
+		lupulo = 0.05,
+		paisDeOrigen = "Mexico",
+		graduacion = 0.08
+	)
+	var guiness = new MarcaNegra(
+		lupulo = 0.09,
+		paisDeOrigen = "Irlanda"
+	)
+	// personas
+	var mark = new PersonaDeNacionalidadBelga(
+		peso = 70,
+		gustoPorLaMusicaTradicional = true,
+		nivelDeAguante = 100
+	)
+	var johanne = new PersonaDeNacionalidadCheca(
+		peso = 90,
+		gustoPorLaMusicaTradicional = false,
+		nivelDeAguante = 85
+	)
+	var degurechaff = new PersonaDeNacionalidadAlemana(
+		peso = 50,
+		gustoPorLaMusicaTradicional = true,
+		nivelDeAguante = 30
+	)
+	// jarras
+	var jarraHofbrau = new Jarra(
+		capacidad = 1,
+		marca = hofbrau
+	)
+	var jarraGuiness = new Jarra(
+		capacidad = 3,
+		marca = guiness
+	)
+	var jarraCorona = new Jarra(
+		capacidad = 1,
+		marca = corona
+	)
+	// carpas
+	var carpa_1 = new Carpa(
+		capacidad = 50,
+		tocaBanda = true,
+		marcaDeCerveza = hofbrau
+	)
+	var carpa_2 = new Carpa(
+		capacidad = 30,
+		tocaBanda = false,
+		marcaDeCerveza = corona
+	)
+	var carpa_3 = new Carpa(
+		capacidad = 40,
+		tocaBanda = false,
+		marcaDeCerveza = guiness
+	)
+	
+	test "1_Contenido de alcohol de una jarra"{
+		assert.equals(0.0625, jarraHofbrau.contenidoDeAlcohol())
+	}
+	test "2_Total de alcohol ingerido por X persona"{
+		degurechaff.comprarJarraDeCerveza(jarraHofbrau)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		assert.equals(0.2225, degurechaff.totalDeAlcoholIngerido())
+	}
+	
+	test "3_¿Estas Ebrio?"{
+		// emborrachamos a degurechaff
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		assert.that(degurechaff.estaEbrio())
+		
+		// le damos algo de tomar a mark
+		mark.comprarJarraDeCerveza(jarraHofbrau)
+		mark.comprarJarraDeCerveza(jarraHofbrau)
+		mark.comprarJarraDeCerveza(jarraHofbrau)
+		
+		assert.notThat(mark.estaEbrio())
+	}
+	test "4_Degurechaff no quiere entrar a la carpa 2 y 3 por su falta de musica pero si a la 1"{
+		assert.that(degurechaff.quiereEntrarACarpa(carpa_1))
+		assert.notThat(degurechaff.quiereEntrarACarpa(carpa_3))
+		assert.notThat(degurechaff.quiereEntrarACarpa(carpa_2))
+	}
+	test "5_Carpa 1 verifica si es posible dejar pasar a Degurechaff (que esta sobrio en este test)"{
+		assert.that(carpa_1.esPosibleIngresar(degurechaff))
+	}
+	test "6_ Verificar si quiere y puede entrar a carpa"{
+		assert.that(mark.puedeEntrarEn(carpa_1)) 
+		assert.that(degurechaff.puedeEntrarEn(carpa_1)) 
+
+	}
+	test "7_ Intentar entrar a carpa ebrio y fallar"{
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		
+		assert.throwsExceptionWithMessage("No permitimos gente ebria", {
+			carpa_1.ingresarPersona(degurechaff)
+		})
+		// si no me equivoco el test da verde porque efectivamente
+		// el self.error en ingresar persona dice lo mismoq que el primer
+		// parametro que le pase a throwsException...
+	}
+	test "8_Cantidad de ebrios empedernidos en carpa 1"{
+		degurechaff.comprarJarraDeCerveza(jarraCorona)
+		mark.comprarJarraDeCerveza(jarraHofbrau)
+		carpa_1.ingresarPersona(degurechaff)
+		carpa_1.ingresarPersona(mark)
+		assert.equals(2, carpa_1.cantidadDeEbriosEmpedernidos())
+	}
+	test "9_All Hail Alemania"{
+		degurechaff.comprarJarraDeCerveza(jarraHofbrau)
+		degurechaff.comprarJarraDeCerveza(jarraHofbrau)
+		assert.that(degurechaff.esPatriota())
+	}
+}

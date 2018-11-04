@@ -3,7 +3,7 @@ import marcas.*
 import carpa.*
 class Persona {
 	var property peso
-	var jarrasDeCervezaCompradas = #{}
+	var jarrasDeCervezaCompradas = []
 	var property gustoPorLaMusicaTradicional
 	var property nivelDeAguante
 	
@@ -15,7 +15,7 @@ class Persona {
 	
 	method totalDeAlcoholIngerido(){
 		return jarrasDeCervezaCompradas.sum{
-			jarra => jarra.graduacion()
+			jarra => jarra.contenidoDeAlcohol()
 		}
 	}
 	
@@ -24,17 +24,19 @@ class Persona {
 	method quiereEntrarACarpa(carpa){
 		return self.esMarcaDeMiGusto(carpa.marcaDeCerveza())
 			   and
-			   carpa.tocaBanda() && self.gustoPorLaMusicaTradicional()
+			   carpa.tocaBanda() == self.gustoPorLaMusicaTradicional()
 	}
 	
 	method puedeEntrarEn(carpa){
 		return self.quiereEntrarACarpa(carpa) and carpa.esPosibleIngresar(self)
 	}
 	
+	method comprarJarraDeCerveza(jarra){jarrasDeCervezaCompradas.add(jarra)}
+	
 	method soyEbrioEmpedernido(){
 		return jarrasDeCervezaCompradas.size() > 0 and
 			   jarrasDeCervezaCompradas.all{
-			       jarra => jarra.capacidad() == 1
+			       jarra => jarra.capacidad() >= 1
 			   }
 	}
 	
@@ -48,14 +50,14 @@ class Persona {
 class PersonaDeNacionalidadBelga inherits Persona{
 	override method nacionalidad() = "Belgica"
 	override method esMarcaDeMiGusto(marca){
-		return marca.lupulo() > 4
+		return marca.lupulo() > 0.04
 	}
 	
 }
 class PersonaDeNacionalidadCheca inherits Persona{
 	override method nacionalidad() = "RepublicaCheca"
 	override method esMarcaDeMiGusto(marca){
-		return marca.graduacion() > 8
+		return marca.graduacion() > 0.08
 	}
 }
 class PersonaDeNacionalidadAlemana inherits Persona{

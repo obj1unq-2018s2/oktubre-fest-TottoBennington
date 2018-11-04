@@ -1,5 +1,6 @@
 import jarra.*
 import marcas.*
+import persona.*
 class Carpa {
 	var property capacidad
 	var property tocaBanda
@@ -7,7 +8,7 @@ class Carpa {
 	var personasDentro = #{}
 	
 	method esPosibleIngresar(persona){
-		return self.capacidad() < self.cantidadDePersonas()
+		return self.cantidadDePersonas() < self.capacidad()
 			   and
 			   not persona.estaEbrio()
 	}
@@ -17,8 +18,9 @@ class Carpa {
 	method ingresarPersona(persona){
 		if(self.esPosibleIngresar(persona) and persona.quiereEntrarACarpa(self)){
 			personasDentro.add(persona)
-		}else if(persona.estaEbrio()){self.error("No permitimos gente ebria")}
-		else if(self.cantidadDePersonas() == capacidad){self.error("Lleno")}
+		}
+		if(persona.estaEbrio()){self.error("No permitimos gente ebria")}
+		if(self.cantidadDePersonas() == capacidad){self.error("Lleno")}
 	}
 	
 	method cantidadDeEbriosEmpedernidos(){

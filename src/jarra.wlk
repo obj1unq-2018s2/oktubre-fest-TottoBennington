@@ -1,7 +1,8 @@
 import marcas.*
-import oktubreFest.*
+import carpa.*
+import persona.*
 class Jarra {
-	var property capacidad
+	var property capacidad // son litros
 	var property marca
 	
 	method contenidoDeAlcohol(){
